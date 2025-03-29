@@ -19,12 +19,42 @@ const FactCheckResult: React.FC<FactCheckResultProps> = ({ result }) => {
   
   // Define rating colors and labels
   const getRatingInfo = (rating: string | undefined) => {
-    const ratingMap: Record<string, { color: string; bg: string; label: string }> = {
-      "True": { color: "text-factcheck-green", bg: "bg-factcheck-green/10", label: "True" },
-      "False": { color: "text-factcheck-red", bg: "bg-factcheck-red/10", label: "False" },
-      "Mixed": { color: "text-factcheck-yellow", bg: "bg-factcheck-yellow/10", label: "Mixed" },
-      "Unknown": { color: "text-factcheck-gray", bg: "bg-factcheck-gray/10", label: "Unknown" },
-      "Error": { color: "text-destructive", bg: "bg-destructive/10", label: "Error" },
+    const ratingMap: Record<string, { color: string; bg: string; darkColor: string; darkBg: string; label: string }> = {
+      "True": { 
+        color: "text-factcheck-green", 
+        bg: "bg-factcheck-green/10", 
+        darkColor: "dark:text-green-400", 
+        darkBg: "dark:bg-green-500/20", 
+        label: "True" 
+      },
+      "False": { 
+        color: "text-factcheck-red", 
+        bg: "bg-factcheck-red/10", 
+        darkColor: "dark:text-red-400", 
+        darkBg: "dark:bg-red-500/20", 
+        label: "False" 
+      },
+      "Mixed": { 
+        color: "text-factcheck-yellow", 
+        bg: "bg-factcheck-yellow/10", 
+        darkColor: "dark:text-yellow-300", 
+        darkBg: "dark:bg-yellow-500/20", 
+        label: "Mixed" 
+      },
+      "Unknown": { 
+        color: "text-factcheck-gray", 
+        bg: "bg-factcheck-gray/10", 
+        darkColor: "dark:text-gray-300", 
+        darkBg: "dark:bg-gray-500/20", 
+        label: "Unknown" 
+      },
+      "Error": { 
+        color: "text-destructive", 
+        bg: "bg-destructive/10", 
+        darkColor: "dark:text-red-400", 
+        darkBg: "dark:bg-red-900/20", 
+        label: "Error" 
+      },
     };
     
     // Default to unknown if rating is not recognized
@@ -37,15 +67,15 @@ const FactCheckResult: React.FC<FactCheckResultProps> = ({ result }) => {
   const formattedDate = reviewDate ? new Date(reviewDate).toLocaleDateString() : null;
   
   return (
-    <Card className="w-full max-w-3xl">
-      <CardHeader className={`${ratingInfo.bg} border-b`}>
+    <Card className="w-full max-w-3xl dark:border-slate-700">
+      <CardHeader className={`${ratingInfo.bg} ${ratingInfo.darkBg} border-b dark:border-slate-700`}>
         <div className="flex justify-between items-center">
           <CardTitle className="text-2xl font-bold">Fact Check Result</CardTitle>
-          <Badge className={`${ratingInfo.color} ${ratingInfo.bg} text-sm px-3 py-1`}>
+          <Badge className={`${ratingInfo.color} ${ratingInfo.darkColor} ${ratingInfo.bg} ${ratingInfo.darkBg} text-sm px-3 py-1`}>
             {ratingInfo.label}
           </Badge>
         </div>
-        <CardDescription>
+        <CardDescription className="dark:text-slate-300">
           {result.isUrl ? "URL checked" : "Claim checked"}
         </CardDescription>
       </CardHeader>
@@ -78,7 +108,7 @@ const FactCheckResult: React.FC<FactCheckResultProps> = ({ result }) => {
           </p>
         </div>
         
-        <Separator />
+        <Separator className="dark:bg-slate-700" />
         
         <div className="space-y-3">
           {ratingSource && (

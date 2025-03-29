@@ -38,32 +38,32 @@ const FactCheckHistory: React.FC<FactCheckHistoryProps> = ({ onSelectResult }) =
   const getRatingBadgeClass = (rating: string | undefined) => {
     switch (rating) {
       case "True":
-        return "bg-factcheck-green/10 text-factcheck-green";
+        return "bg-factcheck-green/10 text-factcheck-green dark:bg-green-500/20 dark:text-green-400";
       case "False":
-        return "bg-factcheck-red/10 text-factcheck-red";
+        return "bg-factcheck-red/10 text-factcheck-red dark:bg-red-500/20 dark:text-red-400";
       case "Mixed":
-        return "bg-factcheck-yellow/10 text-factcheck-yellow";
+        return "bg-factcheck-yellow/10 text-factcheck-yellow dark:bg-yellow-500/20 dark:text-yellow-300";
       default:
-        return "bg-factcheck-gray/10 text-factcheck-gray";
+        return "bg-factcheck-gray/10 text-factcheck-gray dark:bg-gray-500/20 dark:text-gray-300";
     }
   };
 
   return (
-    <Card className="w-full max-w-3xl">
+    <Card className="w-full max-w-3xl dark:border-slate-700">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <div className="space-y-1">
           <CardTitle className="text-xl font-medium">
             <History className="h-5 w-5 inline mr-2" />
             Check History
           </CardTitle>
-          <CardDescription>Your recent fact checking activity</CardDescription>
+          <CardDescription className="dark:text-slate-300">Your recent fact checking activity</CardDescription>
         </div>
         {history.length > 0 && (
           <Button
             variant="outline"
             size="sm"
             onClick={handleClearHistory}
-            className="h-8 text-xs"
+            className="h-8 text-xs dark:border-slate-600"
           >
             <Trash2 className="h-3 w-3 mr-1" />
             Clear
@@ -82,7 +82,7 @@ const FactCheckHistory: React.FC<FactCheckHistoryProps> = ({ onSelectResult }) =
               <div
                 key={item.id}
                 onClick={() => onSelectResult(item)}
-                className="p-3 border rounded-md hover:bg-muted/50 cursor-pointer transition-colors"
+                className="p-3 border dark:border-slate-700 rounded-md hover:bg-muted/50 dark:hover:bg-slate-800/70 cursor-pointer transition-colors"
               >
                 <div className="flex justify-between items-start mb-2">
                   <div className="font-medium truncate flex-1 mr-2">

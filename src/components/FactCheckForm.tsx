@@ -62,10 +62,10 @@ const FactCheckForm: React.FC<FactCheckFormProps> = ({ onResultReceived }) => {
   };
 
   return (
-    <Card className="w-full max-w-3xl">
+    <Card className="w-full max-w-3xl dark:border-slate-700">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold text-factcheck-blue">Fact Checker</CardTitle>
-        <CardDescription>
+        <CardTitle className="text-2xl font-bold text-factcheck-blue dark:text-blue-400">Fact Checker</CardTitle>
+        <CardDescription className="dark:text-slate-300">
           Enter a claim or URL to verify its accuracy against fact checking sources
         </CardDescription>
       </CardHeader>
@@ -73,7 +73,7 @@ const FactCheckForm: React.FC<FactCheckFormProps> = ({ onResultReceived }) => {
         <form onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label htmlFor="apiKey" className="block text-sm font-medium mb-1">
+              <label htmlFor="apiKey" className="block text-sm font-medium mb-1 dark:text-slate-200">
                 Google Fact Check API Key
               </label>
               <Input
@@ -82,7 +82,7 @@ const FactCheckForm: React.FC<FactCheckFormProps> = ({ onResultReceived }) => {
                 value={apiKey}
                 onChange={(e) => setApiKeyState(e.target.value)}
                 placeholder="Enter your API key"
-                className="w-full"
+                className="w-full dark:bg-slate-800 dark:border-slate-700"
               />
               <p className="text-xs text-muted-foreground mt-1">
                 Your API key is stored locally in your browser
@@ -97,7 +97,7 @@ const FactCheckForm: React.FC<FactCheckFormProps> = ({ onResultReceived }) => {
 
               <TabsContent value="text" className="space-y-4">
                 <div className="mt-4">
-                  <label htmlFor="claim" className="block text-sm font-medium mb-1">
+                  <label htmlFor="claim" className="block text-sm font-medium mb-1 dark:text-slate-200">
                     Enter the claim to fact check
                   </label>
                   <div className="flex gap-2">
@@ -106,7 +106,7 @@ const FactCheckForm: React.FC<FactCheckFormProps> = ({ onResultReceived }) => {
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                       placeholder="e.g., The Earth is flat"
-                      className="flex-1"
+                      className="flex-1 dark:bg-slate-800 dark:border-slate-700"
                     />
                     <Button
                       type="submit"
@@ -125,7 +125,7 @@ const FactCheckForm: React.FC<FactCheckFormProps> = ({ onResultReceived }) => {
 
               <TabsContent value="url" className="space-y-4">
                 <div className="mt-4">
-                  <label htmlFor="url" className="block text-sm font-medium mb-1">
+                  <label htmlFor="url" className="block text-sm font-medium mb-1 dark:text-slate-200">
                     Enter the URL to fact check
                   </label>
                   <div className="flex gap-2">
@@ -134,7 +134,7 @@ const FactCheckForm: React.FC<FactCheckFormProps> = ({ onResultReceived }) => {
                       value={query}
                       onChange={(e) => setQuery(e.target.value)}
                       placeholder="https://example.com/article"
-                      className="flex-1"
+                      className="flex-1 dark:bg-slate-800 dark:border-slate-700"
                     />
                     <Button
                       type="submit"
@@ -154,7 +154,7 @@ const FactCheckForm: React.FC<FactCheckFormProps> = ({ onResultReceived }) => {
           </div>
         </form>
       </CardContent>
-      <CardFooter className="flex justify-between border-t pt-4 text-xs text-muted-foreground">
+      <CardFooter className="flex justify-between border-t dark:border-slate-700 pt-4 text-xs text-muted-foreground">
         <div>Rate limited to 100 queries/day</div>
         <div>Using Google Fact Check API</div>
       </CardFooter>
