@@ -4,12 +4,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Info, ExternalLink, Calendar, User } from "lucide-react";
-import { FactCheckResult } from "@/services/databaseService";
+import type { FactCheckResult as FactCheckResultType } from "@/services/databaseService";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 
 interface FactCheckResultProps {
-  result: FactCheckResult | null;
+  result: FactCheckResultType | null;
 }
 
 const FactCheckResult: React.FC<FactCheckResultProps> = ({ result }) => {
