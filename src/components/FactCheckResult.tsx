@@ -7,6 +7,7 @@ import { Info, ExternalLink, Calendar, User } from "lucide-react";
 import type { FactCheckResult as FactCheckResultType } from "@/services/databaseService";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 interface FactCheckResultProps {
   result: FactCheckResultType | null;
@@ -15,7 +16,7 @@ interface FactCheckResultProps {
 const FactCheckResult: React.FC<FactCheckResultProps> = ({ result }) => {
   if (!result) return null;
 
-  const { rating, confidence, claim, claimant, ratingSource, reviewDate, url } = result.result;
+  const { rating, confidence, claim, claimant, sources, reviewDate, url } = result.result;
   
   // Define rating colors and labels
   const getRatingInfo = (rating: string | undefined) => {
@@ -66,6 +67,9 @@ const FactCheckResult: React.FC<FactCheckResultProps> = ({ result }) => {
   // Format the date
   const formattedDate = reviewDate ? new Date(reviewDate).toLocaleDateString() : null;
   
+  // Get number of sources to display
+  const sourceCount = sources?.length || (result.result.ratingSource ? 1 : 0);
+  
   return (
     <Card className="w-full max-w-3xl dark:border-slate-700">
       <CardHeader className={`${ratingInfo.bg} ${ratingInfo.darkBg} border-b dark:border-slate-700`}>
@@ -77,6 +81,7 @@ const FactCheckResult: React.FC<FactCheckResultProps> = ({ result }) => {
         </div>
         <CardDescription className="dark:text-slate-300">
           {result.isUrl ? "URL checked" : "Claim checked"}
+          {sourceCount > 0 && ` • Verified by ${sourceCount} ${sourceCount === 1 ? 'source' : 'sources'}`}
         </CardDescription>
       </CardHeader>
       
@@ -111,28 +116,63 @@ const FactCheckResult: React.FC<FactCheckResultProps> = ({ result }) => {
         <Separator className="dark:bg-slate-700" />
         
         <div className="space-y-3">
-          {ratingSource && (
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-muted-foreground">Fact check by:</span>
-              <span className="font-medium">{ratingSource}</span>
+          {/* Handle multiple sources if available */}
+          {sources && sources.length > 0 ? (
+            <div className="space-y-3">
+              <h3 className="text-sm font-medium">Fact checked by {sources.length} {sources.length === 1 ? 'source' : 'sources'}:</h3>
+              
+              {sources.map((source, index) => (
+                <div key={index} className="border rounded-md p-3 dark:border-slate-700">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium">{source.name}</span>
+                    {source.date && (
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Calendar className="h-3 w-3" />
+                        <span>{new Date(source.date).toLocaleDateString()}</span>
+                      </div>
+                    )}
+                  </div>
+                  {source.conclusion && (
+                    <p className="text-sm mt-2 text-muted-foreground">{source.conclusion}</p>
+                  )}
+                  {source.url && (
+                    <Button variant="outline" size="sm" className="mt-2 text-xs" asChild>
+                      <a href={source.url} target="_blank" rel="noopener noreferrer">
+                        View Original Fact Check
+                        <ExternalLink className="h-3 w-3 ml-1" />
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              ))}
             </div>
-          )}
-          
-          {formattedDate && (
-            <div className="flex items-center gap-2 text-sm">
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span>Reviewed on:</span>
-              <span>{formattedDate}</span>
-            </div>
-          )}
-          
-          {url && (
-            <Button variant="outline" size="sm" className="mt-2" asChild>
-              <a href={url} target="_blank" rel="noopener noreferrer">
-                View Original Fact Check
-                <ExternalLink className="h-3 w-3 ml-1" />
-              </a>
-            </Button>
+          ) : (
+            <>
+              {/* Legacy single source display for backward compatibility */}
+              {result.result.ratingSource && (
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-muted-foreground">Fact check by:</span>
+                  <span className="font-medium">{result.result.ratingSource}</span>
+                </div>
+              )}
+              
+              {formattedDate && (
+                <div className="flex items-center gap-2 text-sm">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <span>Reviewed on:</span>
+                  <span>{formattedDate}</span>
+                </div>
+              )}
+              
+              {url && (
+                <Button variant="outline" size="sm" className="mt-2" asChild>
+                  <a href={url} target="_blank" rel="noopener noreferrer">
+                    View Original Fact Check
+                    <ExternalLink className="h-3 w-3 ml-1" />
+                  </a>
+                </Button>
+              )}
+            </>
           )}
         </div>
       </CardContent>

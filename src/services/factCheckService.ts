@@ -26,6 +26,14 @@ interface GoogleFactCheckResponse {
   }>;
 }
 
+// Interface for fact check sources
+export interface FactCheckSource {
+  name: string;
+  url?: string;
+  date?: string;
+  conclusion?: string;
+}
+
 export const setApiKey = (key: string) => {
   API_KEY = key;
   localStorage.setItem('factcheck-api-key', key);
@@ -103,6 +111,21 @@ const parseRating = (response: GoogleFactCheckResponse): string => {
   return response.claims[0].claimReview[0].textualRating || "Unknown";
 };
 
+// Extract multiple fact check sources from the API response
+const extractFactCheckSources = (response: GoogleFactCheckResponse): FactCheckSource[] => {
+  if (!response.claims?.length || !response.claims[0].claimReview?.length) {
+    return [];
+  }
+
+  // Map each claim review to a source
+  return response.claims[0].claimReview.map(review => ({
+    name: review.publisher?.name || "Unknown Source",
+    url: review.url,
+    date: review.reviewDate,
+    conclusion: review.textualRating
+  }));
+};
+
 // Fact check a claim using Google's Fact Check API
 export const factCheck = async (query: string): Promise<FactCheckResult> => {
   if (!API_KEY) {
@@ -141,6 +164,7 @@ export const factCheck = async (query: string): Promise<FactCheckResult> => {
     // Process the data
     const confidence = calculateConfidence(data);
     const rating = parseRating(data);
+    const sources = extractFactCheckSources(data);
     
     // Create the result object
     const result: Omit<FactCheckResult, 'id' | 'timestamp'> = {
@@ -149,6 +173,7 @@ export const factCheck = async (query: string): Promise<FactCheckResult> => {
       result: {
         confidence,
         rating,
+        sources
       }
     };
     
@@ -158,6 +183,7 @@ export const factCheck = async (query: string): Promise<FactCheckResult> => {
       result.result.claim = claim.text;
       result.result.claimant = claim.claimant;
       
+      // Legacy support for single source
       if (claim.claimReview && claim.claimReview.length > 0) {
         const review = claim.claimReview[0];
         result.result.ratingSource = review.publisher?.name;
@@ -204,6 +230,28 @@ export const fallbackFactCheck = async (query: string): Promise<FactCheckResult>
     rating = "True";
   }
   
+  // Create mock sources
+  const mockSources: FactCheckSource[] = [
+    {
+      name: "Fact Check Central",
+      url: "https://example.com/factcheck1",
+      date: new Date().toISOString(),
+      conclusion: "This claim requires further investigation."
+    },
+    {
+      name: "Truth Detector",
+      url: "https://example.com/factcheck2",
+      date: new Date().toISOString(),
+      conclusion: "Our analysis shows this claim is partially accurate."
+    },
+    {
+      name: "Fact Verification Institute",
+      url: "https://example.com/factcheck3",
+      date: new Date().toISOString(),
+      conclusion: "Multiple sources confirm this claim needs context."
+    }
+  ];
+  
   const result: Omit<FactCheckResult, 'id' | 'timestamp'> = {
     query,
     isUrl: isQueryUrl,
@@ -211,6 +259,7 @@ export const fallbackFactCheck = async (query: string): Promise<FactCheckResult>
       claim: isQueryUrl ? "Content from this URL" : query,
       confidence: randomConfidence,
       rating,
+      sources: mockSources,
       ratingSource: "Fallback Verification System",
       reviewDate: new Date().toISOString().split('T')[0]
     }

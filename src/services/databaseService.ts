@@ -1,6 +1,7 @@
 
 // Simple database service using localStorage for this MVP version
 // This would be replaced with a proper backend DB in production
+import { FactCheckSource } from "./factCheckService";
 
 export interface FactCheckResult {
   id: string;
@@ -14,6 +15,7 @@ export interface FactCheckResult {
     ratingSource?: string;
     reviewDate?: string;
     url?: string;
+    sources?: FactCheckSource[];
   };
   timestamp: number;
 }
